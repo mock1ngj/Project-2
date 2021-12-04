@@ -1,0 +1,250 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Generated with glade 3.38.2 -->
+<interface>
+  <requires lib="gtk+" version="3.24"/>
+  <object class="GtkWindow" id="window">
+    <property name="width-request">800</property>
+    <property name="height-request">700</property>
+    <property name="can-focus">False</property>
+    <property name="title" translatable="yes">Scheduling Algorithm</property>
+    <property name="default-width">550</property>
+    <property name="default-height">700</property>
+    <property name="icon-name">Project#2</property>
+    <child>
+      <object class="GtkFixed" id="fixed_container">
+        <property name="visible">True</property>
+        <property name="can-focus">False</property>
+        <child>
+          <object class="GtkSwitch" id="switch">
+            <property name="use-action-appearance">False</property>
+            <property name="visible">True</property>
+            <property name="app-paintable">True</property>
+            <property name="can-focus">False</property>
+            <signal name="state-set" handler="state_set" swapped="no"/>
+          </object>
+          <packing>
+            <property name="x">12</property>
+            <property name="y">14</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkLabel" id="switch_label">
+            <property name="width-request">100</property>
+            <property name="height-request">26</property>
+            <property name="visible">True</property>
+            <property name="can-focus">False</property>
+            <property name="label" translatable="yes">FCFS</property>
+          </object>
+          <packing>
+            <property name="x">72</property>
+            <property name="y">14</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkLabel">
+            <property name="width-request">100</property>
+            <property name="height-request">31</property>
+            <property name="visible">True</property>
+            <property name="can-focus">False</property>
+            <property name="label" translatable="yes">Job Process</property>
+          </object>
+          <packing>
+            <property name="x">51</property>
+            <property name="y">54</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkEntry" id="burst_entry">
+            <property name="width-request">168</property>
+            <property name="height-request">34</property>
+            <property name="visible">True</property>
+            <property name="can-focus">True</property>
+            <signal name="activate" handler="burst_entry_activate" swapped="no"/>
+          </object>
+          <packing>
+            <property name="x">195</property>
+            <property name="y">83</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkEntry" id="arrival_entry">
+            <property name="width-request">168</property>
+            <property name="height-request">34</property>
+            <property name="visible">True</property>
+            <property name="can-focus">True</property>
+            <signal name="activate" handler="arrival_entry_activate" swapped="no"/>
+          </object>
+          <packing>
+            <property name="x">373</property>
+            <property name="y">83</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkEntry" id="priority_entry">
+            <property name="width-request">168</property>
+            <property name="height-request">34</property>
+            <property name="visible">True</property>
+            <property name="can-focus">True</property>
+            <property name="caps-lock-warning">False</property>
+            <signal name="activate" handler="priority_entry_activate" swapped="no"/>
+          </object>
+          <packing>
+            <property name="x">551</property>
+            <property name="y">83</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkLabel">
+            <property name="width-request">100</property>
+            <property name="height-request">31</property>
+            <property name="visible">True</property>
+            <property name="can-focus">False</property>
+            <property name="label" translatable="yes">Burst Time</property>
+          </object>
+          <packing>
+            <property name="x">229</property>
+            <property name="y">54</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkLabel">
+            <property name="height-request">31</property>
+            <property name="visible">True</property>
+            <property name="can-focus">False</property>
+            <property name="label" translatable="yes">Priority H = 1 L = 5</property>
+          </object>
+          <packing>
+            <property name="x">577</property>
+            <property name="y">54</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkLabel">
+            <property name="width-request">100</property>
+            <property name="height-request">31</property>
+            <property name="visible">True</property>
+            <property name="can-focus">False</property>
+            <property name="label" translatable="yes">Arrival Time</property>
+          </object>
+          <packing>
+            <property name="x">409</property>
+            <property name="y">54</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkTextView" id="job_view">
+            <property name="width-request">150</property>
+            <property name="height-request">300</property>
+            <property name="visible">True</property>
+            <property name="sensitive">False</property>
+            <property name="can-focus">False</property>
+            <property name="hscroll-policy">natural</property>
+            <property name="vscroll-policy">natural</property>
+            <property name="editable">False</property>
+            <property name="wrap-mode">word</property>
+            <property name="justification">center</property>
+            <property name="cursor-visible">False</property>
+            <property name="accepts-tab">False</property>
+          </object>
+          <packing>
+            <property name="x">26</property>
+            <property name="y">125</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkTextView" id="burst_view">
+            <property name="width-request">150</property>
+            <property name="height-request">300</property>
+            <property name="visible">True</property>
+            <property name="sensitive">False</property>
+            <property name="can-focus">False</property>
+            <property name="hscroll-policy">natural</property>
+            <property name="vscroll-policy">natural</property>
+            <property name="editable">False</property>
+            <property name="wrap-mode">word</property>
+            <property name="justification">center</property>
+            <property name="cursor-visible">False</property>
+            <property name="accepts-tab">False</property>
+          </object>
+          <packing>
+            <property name="x">204</property>
+            <property name="y">125</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkTextView" id="arrival_view">
+            <property name="width-request">150</property>
+            <property name="height-request">300</property>
+            <property name="visible">True</property>
+            <property name="sensitive">False</property>
+            <property name="can-focus">False</property>
+            <property name="hscroll-policy">natural</property>
+            <property name="vscroll-policy">natural</property>
+            <property name="editable">False</property>
+            <property name="wrap-mode">word</property>
+            <property name="justification">center</property>
+            <property name="cursor-visible">False</property>
+            <property name="accepts-tab">False</property>
+          </object>
+          <packing>
+            <property name="x">381</property>
+            <property name="y">125</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkTextView" id="priority_view">
+            <property name="width-request">150</property>
+            <property name="height-request">300</property>
+            <property name="visible">True</property>
+            <property name="sensitive">False</property>
+            <property name="can-focus">False</property>
+            <property name="hscroll-policy">natural</property>
+            <property name="vscroll-policy">natural</property>
+            <property name="editable">False</property>
+            <property name="wrap-mode">word</property>
+            <property name="justification">center</property>
+            <property name="cursor-visible">False</property>
+            <property name="accepts-tab">False</property>
+          </object>
+          <packing>
+            <property name="x">560</property>
+            <property name="y">125</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkButton" id="clear_button">
+            <property name="label">gtk-clear</property>
+            <property name="width-request">100</property>
+            <property name="visible">True</property>
+            <property name="can-focus">True</property>
+            <property name="receives-default">True</property>
+            <property name="use-stock">True</property>
+            <property name="always-show-image">True</property>
+            <signal name="clicked" handler="clear_button_clicked" swapped="no"/>
+          </object>
+          <packing>
+            <property name="x">431</property>
+            <property name="y">436</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkButton" id="start_button">
+            <property name="label">gtk-ok</property>
+            <property name="width-request">100</property>
+            <property name="height-request">34</property>
+            <property name="visible">True</property>
+            <property name="can-focus">True</property>
+            <property name="receives-default">True</property>
+            <property name="use-stock">True</property>
+            <property name="always-show-image">True</property>
+            <signal name="clicked" handler="ok_clicked" swapped="no"/>
+          </object>
+          <packing>
+            <property name="x">560</property>
+            <property name="y">436</property>
+          </packing>
+        </child>
+      </object>
+    </child>
+  </object>
+</interface>
