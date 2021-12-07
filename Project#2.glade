@@ -111,7 +111,7 @@
             <property name="height-request">31</property>
             <property name="visible">True</property>
             <property name="can-focus">False</property>
-            <property name="label" translatable="yes">Priority H = 1 L = 5</property>
+            <property name="label" translatable="yes">Priority H = 1 L = 8</property>
           </object>
           <packing>
             <property name="x">577</property>
@@ -242,6 +242,18 @@
           <packing>
             <property name="x">560</property>
             <property name="y">436</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkDrawingArea">
+            <property name="width-request">700</property>
+            <property name="height-request">140</property>
+            <property name="visible">True</property>
+            <property name="can-focus">False</property>
+          </object>
+          <packing>
+            <property name="x">26</property>
+            <property name="y">518</property>
           </packing>
         </child>
       </object>
