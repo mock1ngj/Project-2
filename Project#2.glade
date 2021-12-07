@@ -2,6 +2,39 @@
 <!-- Generated with glade 3.38.2 -->
 <interface>
   <requires lib="gtk+" version="3.24"/>
+  <object class="GtkMessageDialog" id="warning">
+    <property name="can-focus">False</property>
+    <property name="type-hint">dialog</property>
+    <property name="message-type">warning</property>
+    <property name="buttons">ok</property>
+    <property name="text" translatable="yes">Number of Elements does NOT match</property>
+    <property name="secondary-text" translatable="yes">match the number of burst time</property>
+    <child internal-child="vbox">
+      <object class="GtkBox" id="warning_box">
+        <property name="can-focus">False</property>
+        <property name="orientation">vertical</property>
+        <property name="spacing">2</property>
+        <child internal-child="action_area">
+          <object class="GtkButtonBox" id="ok_warning">
+            <property name="can-focus">False</property>
+            <property name="homogeneous">True</property>
+            <property name="layout-style">end</property>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">False</property>
+            <property name="position">0</property>
+          </packing>
+        </child>
+      </object>
+    </child>
+  </object>
   <object class="GtkWindow" id="window">
     <property name="width-request">800</property>
     <property name="height-request">700</property>
@@ -62,7 +95,7 @@
             <signal name="activate" handler="burst_entry_activate" swapped="no"/>
           </object>
           <packing>
-            <property name="x">195</property>
+            <property name="x">215</property>
             <property name="y">83</property>
           </packing>
         </child>
@@ -75,7 +108,7 @@
             <signal name="activate" handler="arrival_entry_activate" swapped="no"/>
           </object>
           <packing>
-            <property name="x">373</property>
+            <property name="x">410</property>
             <property name="y">83</property>
           </packing>
         </child>
@@ -89,7 +122,7 @@
             <signal name="activate" handler="priority_entry_activate" swapped="no"/>
           </object>
           <packing>
-            <property name="x">551</property>
+            <property name="x">609</property>
             <property name="y">83</property>
           </packing>
         </child>
@@ -102,7 +135,7 @@
             <property name="label" translatable="yes">Burst Time</property>
           </object>
           <packing>
-            <property name="x">229</property>
+            <property name="x">249</property>
             <property name="y">54</property>
           </packing>
         </child>
@@ -114,7 +147,7 @@
             <property name="label" translatable="yes">Priority H = 1 L = 8</property>
           </object>
           <packing>
-            <property name="x">577</property>
+            <property name="x">634</property>
             <property name="y">54</property>
           </packing>
         </child>
@@ -127,7 +160,7 @@
             <property name="label" translatable="yes">Arrival Time</property>
           </object>
           <packing>
-            <property name="x">409</property>
+            <property name="x">443</property>
             <property name="y">54</property>
           </packing>
         </child>
@@ -167,7 +200,7 @@
             <property name="accepts-tab">False</property>
           </object>
           <packing>
-            <property name="x">204</property>
+            <property name="x">225</property>
             <property name="y">125</property>
           </packing>
         </child>
@@ -187,7 +220,7 @@
             <property name="accepts-tab">False</property>
           </object>
           <packing>
-            <property name="x">381</property>
+            <property name="x">420</property>
             <property name="y">125</property>
           </packing>
         </child>
@@ -207,7 +240,7 @@
             <property name="accepts-tab">False</property>
           </object>
           <packing>
-            <property name="x">560</property>
+            <property name="x">617</property>
             <property name="y">125</property>
           </packing>
         </child>
@@ -223,7 +256,7 @@
             <signal name="clicked" handler="clear_button_clicked" swapped="no"/>
           </object>
           <packing>
-            <property name="x">431</property>
+            <property name="x">470</property>
             <property name="y">436</property>
           </packing>
         </child>
@@ -240,20 +273,34 @@
             <signal name="clicked" handler="ok_clicked" swapped="no"/>
           </object>
           <packing>
-            <property name="x">560</property>
+            <property name="x">617</property>
             <property name="y">436</property>
           </packing>
         </child>
         <child>
-          <object class="GtkDrawingArea">
-            <property name="width-request">700</property>
+          <object class="GtkDrawingArea" id="gantt_chart">
+            <property name="width-request">750</property>
             <property name="height-request">140</property>
             <property name="visible">True</property>
             <property name="can-focus">False</property>
+            <signal name="draw" handler="draw_gantt_chart" swapped="no"/>
           </object>
           <packing>
             <property name="x">26</property>
             <property name="y">518</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkLabel">
+            <property name="width-request">100</property>
+            <property name="height-request">80</property>
+            <property name="visible">True</property>
+            <property name="can-focus">False</property>
+            <property name="label" translatable="yes">Gantt Chart</property>
+          </object>
+          <packing>
+            <property name="x">380</property>
+            <property name="y">475</property>
           </packing>
         </child>
       </object>

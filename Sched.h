@@ -12,6 +12,9 @@ typedef struct
     GtkWidget *arrival_view;
     GtkWidget *priority_view;
     GtkWidget *clear;
+    GtkWidget *start_button;
+    GtkWidget *gantt_chart;
+    bool draw;
 }GUI;
 
 typedef struct
@@ -22,6 +25,13 @@ typedef struct
     GtkWidget *fifo_container;
     GtkWidget *stack;
 }Container;
+
+typedef struct
+{
+    int data[50];
+    int ctr;
+    bool draw_state;
+}chart;
 
 typedef struct
 {

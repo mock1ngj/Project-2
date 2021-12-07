@@ -10,20 +10,26 @@ compiled on GCC
 GtkBuilder *builder;
 GUI gui;
 Container container;
-GtkWidget **entry, **label;
+GtkWidget **entry, **label, *test, *test_box;
 GtkTextBuffer *job_view, *burst_view, *arrival_view, *priority_view;
 GtkTextIter end, start;
 data sched;
-
+chart gantt;
 
 int main(int argc, char *argv[])
 {
     sched.job_ctr = 0;
     sched.arrival_ctr = 0;
     sched.priority_ctr = 0;
+    gantt.ctr = 0;
 
+    gui.draw = false;
+
+    //array declaration for the gtk widgets
     entry = g_new(GtkWidget, 3);
     label = g_new(GtkWidget, 4);
+
+    
     //starts the gtk loop
     gtk_init(&argc, &argv);
 
@@ -34,15 +40,17 @@ int main(int argc, char *argv[])
     builder = gtk_builder_new_from_file("Project#2.glade");
     //creates the window
     container.window = GTK_WIDGET(gtk_builder_get_object(builder, "window"));
+    test = GTK_WIDGET(gtk_builder_get_object(builder, "warning"));
 
     //to be able to exit the window
     g_signal_connect(container.window,"destroy", G_CALLBACK(gtk_main_quit), NULL);
-
+    
     //connects all the signals to their respective objects
     gtk_builder_connect_signals(builder, NULL);
 
     //creates the container
     container.fixed_container = GTK_WIDGET(gtk_builder_get_object(builder, "fixed_container"));
+    test_box = GTK_WIDGET(gtk_builder_get_object(builder, "warning_box"));
 
     //creates the entry
     entry[0] = GTK_WIDGET(gtk_builder_get_object(builder, "burst_entry"));
@@ -50,18 +58,22 @@ int main(int argc, char *argv[])
     entry[2] = GTK_WIDGET(gtk_builder_get_object(builder, "priority_entry"));
 
     gui.clear = GTK_WIDGET(gtk_builder_get_object(builder, "clear_button"));
+    gui.start_button = GTK_WIDGET(gtk_builder_get_object(builder, "start_button"));
 
     //creates the switch gui
     gui.switch_gui = GTK_WIDGET(gtk_builder_get_object(builder, "switch"));
 
     label[0] = GTK_WIDGET(gtk_builder_get_object(builder, "switch_label"));
     
-    //text view for the different entries
+    //text area for the different entries
     gui.job_view = GTK_WIDGET(gtk_builder_get_object(builder, "job_view"));
     gui.burst_view = GTK_WIDGET(gtk_builder_get_object(builder, "burst_view"));
     gui.arrival_view = GTK_WIDGET(gtk_builder_get_object(builder, "arrival_view"));
     gui.priority_view = GTK_WIDGET(gtk_builder_get_object(builder, "priority_view"));
 
+    gui.gantt_chart = GTK_WIDGET(gtk_builder_get_object(builder, "gantt_chart"));
+
+    //turns off the priority entry
     gtk_widget_set_sensitive(entry[2], FALSE);
 
     /*
@@ -172,9 +184,11 @@ void priority_entry_activate(GtkEntry *priority_entry)
 void clear_button_clicked(GtkButton *clear)
 {
 
+
     /*
-    deletes the text area
+    deletes the content of the text area
     */
+    gantt.draw_state = FALSE;
     gtk_text_buffer_get_bounds(job_view, &start, &end);
     gtk_text_buffer_delete(job_view, &start, &end);
     gtk_text_buffer_get_bounds(burst_view, &start, &end);
@@ -191,17 +205,26 @@ void clear_button_clicked(GtkButton *clear)
         sched.priority[i] = NULL;
     }
     
+    for (int i = 0; i < 50; i++)
+    {
+        gantt.data[i] = NULL;
+    }
+    
     sched.arrival_ctr = 0;
     sched.job_ctr = 0;
     sched.priority_ctr = 0;
+    gantt.ctr = 0;
 
     gtk_widget_set_sensitive(entry[0], TRUE);
     gtk_widget_set_sensitive(entry[1], TRUE);
+    gtk_widget_set_sensitive(gui.start_button, TRUE);
 
     if(sched.state)
     {
         gtk_widget_set_sensitive(entry[2], TRUE);
     }
+    //updates the gantt chart
+    gtk_widget_queue_draw(gui.gantt_chart);
 }
 
 void sort()
@@ -252,9 +275,17 @@ int highPriority(int current_time)
 
 void ok_clicked(GtkButton *ok_button)
 {
-    int total_time = 0, current_time = 0, job_no = sched.job_ctr;
+    int current_time = 0, job_no = sched.job_ctr;
+    gantt.draw_state = TRUE;
 
-    if(sched.state)
+    if (sched.job_ctr < sched.arrival_ctr || sched.job_ctr < sched.priority_ctr)
+    {
+        gtk_dialog_run(GTK_DIALOG(test));
+        
+    }
+    
+
+    if(sched.state && sched.job_ctr == sched.arrival_ctr && sched.job_ctr == sched.priority_ctr)
     {
         sort();
 
@@ -262,6 +293,8 @@ void ok_clicked(GtkButton *ok_button)
 
         current_time = sched.arrival[i] + 1;
         sched.burst[i]--;
+        gantt.ctr++;
+        gantt.data[0] = sched.job[i];
 
         if (sched.burst[i] == 0)
         {
@@ -269,14 +302,15 @@ void ok_clicked(GtkButton *ok_button)
             job_no--;
         }
 
-        printf("p%d", sched.job[i]);
-        for (int prev_indx; job_no > 0;)
+        for (int prev_indx, j = 1; job_no > 0;)
         {
             prev_indx = i;
             i = highPriority(current_time);
             if (prev_indx != i)
             {
-                printf("p%d", sched.job[i]);
+                gantt.data[j] = sched.job[i];
+                j++;
+                gantt.ctr++;
             }
 
             current_time++;
@@ -286,19 +320,49 @@ void ok_clicked(GtkButton *ok_button)
             {
                 sched.priority[i] = 100;
                 job_no--;
-            }    
+            }
         }  
     }
-    else
+    else if (sched.state == FALSE && sched.job_ctr == sched.arrival_ctr)
     {
-        gtk_widget_set_sensitive(entry[0], FALSE);
-        gtk_widget_set_sensitive(entry[1], FALSE);
         
         sort();
-
         for (int i = 0; i < sched.job_ctr; i++)
         {
-            total_time += sched.burst[i];
+            gantt.data[i] = sched.job[i];
+            gantt.ctr++;
         }   
+    }
+
+    gtk_widget_set_sensitive(gui.start_button, FALSE);
+    //updates gantt chart
+    gtk_widget_queue_draw(gui.gantt_chart);
+
+}
+
+gboolean draw_gantt_chart (GtkWidget *widget, cairo_t *cr, gpointer *data)
+{
+    cairo_text_extents_t extents;
+    char process_no[5];
+    double box_spacing = 50;
+    double font_spacing = 60;
+    for (int i = 0; i < gantt.ctr; i++)
+    {
+        if (gantt.draw_state)
+        {
+            cairo_set_source_rgb(cr, 0, 0.5, 0.95);
+            cairo_rectangle(cr, box_spacing, 30, 40, 30);
+            cairo_set_line_width(cr, 1);
+            cairo_set_line_join(cr, CAIRO_LINE_JOIN_MITER);
+            cairo_stroke(cr);
+            cairo_set_source_rgb(cr, 0, 0, 0);
+            sprintf(process_no, "P%d", gantt.data[i]);
+            cairo_text_extents(cr, process_no, &extents);
+            cairo_set_font_size(cr, 15);
+            cairo_move_to(cr, font_spacing, 50);
+            cairo_show_text(cr, process_no);
+            box_spacing+=40;
+            font_spacing+=40;
+        }
     }
 }
