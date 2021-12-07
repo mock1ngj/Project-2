@@ -25,11 +25,12 @@ typedef struct
 
 typedef struct
 {
+    int job[8];
     int burst[8];
     int arrival[8];
     int priority[8];
-    int burst_ctr;
+    int job_ctr;
     int arrival_ctr;
     int priority_ctr;
-    bool state;
+    gboolean state;
 }data;
