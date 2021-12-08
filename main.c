@@ -98,6 +98,7 @@ int main(int argc, char *argv[])
 }
 
 
+//sets the state of the program if its PP or FCFS
 void state_set(GtkSwitch *toggle)
 {
     sched.state =  gtk_switch_get_active(toggle);
@@ -300,7 +301,7 @@ void ok_clicked(GtkButton *ok_button)
         element_matched = FALSE;
     }
 
-    if(sched.state && sched.job_ctr == sched.arrival_ctr && sched.job_ctr == sched.priority_ctr)
+    if(sched.state && element_matched)
     {
         sort();
 
@@ -348,13 +349,14 @@ void ok_clicked(GtkButton *ok_button)
         sprintf(total,"Total Time:%d", current_time);
         gtk_label_set_text(GTK_LABEL(total_label), (const gchar*) total);
     }
-    else if (sched.state == FALSE && sched.job_ctr == sched.arrival_ctr)
+    else if (sched.state == FALSE && element_matched)
     {
         
         sort();
         for (int i = 0; i < sched.job_ctr; i++)
         {
             gantt.data[i] = sched.job[i];
+            current_time += sched.burst[i];
             gantt.ctr++;
         }
         //prints the total time
