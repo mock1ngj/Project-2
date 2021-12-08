@@ -4,18 +4,19 @@
   <requires lib="gtk+" version="3.24"/>
   <object class="GtkMessageDialog" id="warning">
     <property name="can-focus">False</property>
+    <property name="window-position">center-on-parent</property>
     <property name="type-hint">dialog</property>
     <property name="message-type">warning</property>
     <property name="buttons">ok</property>
     <property name="text" translatable="yes">Number of Elements does NOT match</property>
-    <property name="secondary-text" translatable="yes">match the number of burst time</property>
+    <property name="secondary-text" translatable="yes">Enter more data for Arrival time or Priority</property>
     <child internal-child="vbox">
-      <object class="GtkBox" id="warning_box">
+      <object class="GtkBox">
         <property name="can-focus">False</property>
         <property name="orientation">vertical</property>
         <property name="spacing">2</property>
         <child internal-child="action_area">
-          <object class="GtkButtonBox" id="ok_warning">
+          <object class="GtkButtonBox">
             <property name="can-focus">False</property>
             <property name="homogeneous">True</property>
             <property name="layout-style">end</property>
@@ -249,7 +250,7 @@
             <property name="label">gtk-clear</property>
             <property name="width-request">100</property>
             <property name="visible">True</property>
-            <property name="can-focus">True</property>
+            <property name="can-focus">False</property>
             <property name="receives-default">True</property>
             <property name="use-stock">True</property>
             <property name="always-show-image">True</property>
@@ -266,7 +267,7 @@
             <property name="width-request">100</property>
             <property name="height-request">34</property>
             <property name="visible">True</property>
-            <property name="can-focus">True</property>
+            <property name="can-focus">False</property>
             <property name="receives-default">True</property>
             <property name="use-stock">True</property>
             <property name="always-show-image">True</property>
@@ -301,6 +302,19 @@
           <packing>
             <property name="x">380</property>
             <property name="y">475</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkLabel" id="total_time">
+            <property name="width-request">100</property>
+            <property name="height-request">80</property>
+            <property name="visible">True</property>
+            <property name="can-focus">False</property>
+            <property name="label" translatable="yes">Total Time:</property>
+          </object>
+          <packing>
+            <property name="x">26</property>
+            <property name="y">560</property>
           </packing>
         </child>
       </object>

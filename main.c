@@ -5,12 +5,15 @@ compiled on GCC
 
 #include <gtk/gtk.h>
 #include <cairo.h>
+#include<stdbool.h>
 #include "Sched.h"
+
+#define DONE 100;
 
 GtkBuilder *builder;
 GUI gui;
 Container container;
-GtkWidget **entry, **label, *test, *test_box;
+GtkWidget **entry, *switch_label, *warning_popup, *warning_container, *total_label;
 GtkTextBuffer *job_view, *burst_view, *arrival_view, *priority_view;
 GtkTextIter end, start;
 data sched;
@@ -27,8 +30,6 @@ int main(int argc, char *argv[])
 
     //array declaration for the gtk widgets
     entry = g_new(GtkWidget, 3);
-    label = g_new(GtkWidget, 4);
-
     
     //starts the gtk loop
     gtk_init(&argc, &argv);
@@ -40,7 +41,7 @@ int main(int argc, char *argv[])
     builder = gtk_builder_new_from_file("Project#2.glade");
     //creates the window
     container.window = GTK_WIDGET(gtk_builder_get_object(builder, "window"));
-    test = GTK_WIDGET(gtk_builder_get_object(builder, "warning"));
+    warning_popup = GTK_WIDGET(gtk_builder_get_object(builder, "warning"));
 
     //to be able to exit the window
     g_signal_connect(container.window,"destroy", G_CALLBACK(gtk_main_quit), NULL);
@@ -50,7 +51,7 @@ int main(int argc, char *argv[])
 
     //creates the container
     container.fixed_container = GTK_WIDGET(gtk_builder_get_object(builder, "fixed_container"));
-    test_box = GTK_WIDGET(gtk_builder_get_object(builder, "warning_box"));
+    warning_container = GTK_WIDGET(gtk_builder_get_object(builder, "warning_box"));
 
     //creates the entry
     entry[0] = GTK_WIDGET(gtk_builder_get_object(builder, "burst_entry"));
@@ -63,7 +64,8 @@ int main(int argc, char *argv[])
     //creates the switch gui
     gui.switch_gui = GTK_WIDGET(gtk_builder_get_object(builder, "switch"));
 
-    label[0] = GTK_WIDGET(gtk_builder_get_object(builder, "switch_label"));
+    switch_label = GTK_WIDGET(gtk_builder_get_object(builder, "switch_label"));
+    total_label = GTK_WIDGET(gtk_builder_get_object(builder, "total_time"));
     
     //text area for the different entries
     gui.job_view = GTK_WIDGET(gtk_builder_get_object(builder, "job_view"));
@@ -101,12 +103,12 @@ void state_set(GtkSwitch *toggle)
     sched.state =  gtk_switch_get_active(toggle);
     if(sched.state)
     {
-        gtk_label_set_text(GTK_LABEL(label[0]), (const gchar*) "Premptive Priority");
+        gtk_label_set_text(GTK_LABEL(switch_label), (const gchar*) "Premptive Priority");
         gtk_widget_set_sensitive(entry[2], TRUE);
     }
     else
     {
-        gtk_label_set_text(GTK_LABEL(label[0]), (const gchar*) "First Come First Served");
+        gtk_label_set_text(GTK_LABEL(switch_label), (const gchar*) "First Come First Served");
         gtk_widget_set_sensitive(entry[2], FALSE);
     }
 }
@@ -215,6 +217,8 @@ void clear_button_clicked(GtkButton *clear)
     sched.priority_ctr = 0;
     gantt.ctr = 0;
 
+    gtk_label_set_text(GTK_LABEL(total_label), (const gchar*) "Total Time:");
+
     gtk_widget_set_sensitive(entry[0], TRUE);
     gtk_widget_set_sensitive(entry[1], TRUE);
     gtk_widget_set_sensitive(gui.start_button, TRUE);
@@ -258,6 +262,7 @@ void sort()
     }
 }
 
+//returns the higher priority
 int highPriority(int current_time)
 {
     int min_val = sched.priority[0];
@@ -276,14 +281,24 @@ int highPriority(int current_time)
 void ok_clicked(GtkButton *ok_button)
 {
     int current_time = 0, job_no = sched.job_ctr;
+    char total[50];
+    bool element_matched = TRUE;
     gantt.draw_state = TRUE;
 
-    if (sched.job_ctr < sched.arrival_ctr || sched.job_ctr < sched.priority_ctr)
+    //checks if the number of elements matched the arrival and priority
+    if (sched.job_ctr != sched.arrival_ctr || sched.job_ctr != sched.priority_ctr && sched.state)
     {
-        gtk_dialog_run(GTK_DIALOG(test));
-        
+        //executes the popup window
+        gtk_dialog_run(GTK_DIALOG(warning_popup));
+        gtk_widget_hide(warning_popup);
+        element_matched = FALSE;
     }
-    
+    else if (sched.job_ctr != sched.arrival_ctr && sched.state == false)
+    {
+        gtk_dialog_run(GTK_DIALOG(warning_popup));
+        gtk_widget_hide(warning_popup);
+        element_matched = FALSE;
+    }
 
     if(sched.state && sched.job_ctr == sched.arrival_ctr && sched.job_ctr == sched.priority_ctr)
     {
@@ -298,10 +313,16 @@ void ok_clicked(GtkButton *ok_button)
 
         if (sched.burst[i] == 0)
         {
-            sched.priority[i] = 100;
+            sched.priority[i] = DONE;
             job_no--;
         }
 
+        //no logic here just pure bruteforce
+        /*
+        constantly checks if the current index isnt equal to the new index
+        which is returned if the current_time is less than or equal to
+        sched.arrival[i] KEKW
+        */
         for (int prev_indx, j = 1; job_no > 0;)
         {
             prev_indx = i;
@@ -318,10 +339,14 @@ void ok_clicked(GtkButton *ok_button)
 
             if (sched.burst[i] == 0)
             {
-                sched.priority[i] = 100;
+                sched.priority[i] = DONE;
                 job_no--;
             }
         }  
+
+        //prints the total time
+        sprintf(total,"Total Time:%d", current_time);
+        gtk_label_set_text(GTK_LABEL(total_label), (const gchar*) total);
     }
     else if (sched.state == FALSE && sched.job_ctr == sched.arrival_ctr)
     {
@@ -331,10 +356,15 @@ void ok_clicked(GtkButton *ok_button)
         {
             gantt.data[i] = sched.job[i];
             gantt.ctr++;
-        }   
+        }
+        //prints the total time
+        sprintf(total,"Total Time:%d", current_time);
+        gtk_label_set_text(GTK_LABEL(total_label), (const gchar*) total);   
     }
 
-    gtk_widget_set_sensitive(gui.start_button, FALSE);
+    //checks if the elements matched and turns off the button
+    if(element_matched)
+        gtk_widget_set_sensitive(gui.start_button, FALSE);
     //updates gantt chart
     gtk_widget_queue_draw(gui.gantt_chart);
 
@@ -350,12 +380,15 @@ gboolean draw_gantt_chart (GtkWidget *widget, cairo_t *cr, gpointer *data)
     {
         if (gantt.draw_state)
         {
-            cairo_set_source_rgb(cr, 0, 0.5, 0.95);
+            //draws the box
+            cairo_set_source_rgb(cr, 1, 1, 1);
             cairo_rectangle(cr, box_spacing, 30, 40, 30);
             cairo_set_line_width(cr, 1);
             cairo_set_line_join(cr, CAIRO_LINE_JOIN_MITER);
             cairo_stroke(cr);
-            cairo_set_source_rgb(cr, 0, 0, 0);
+
+            //draws the process_no inside the box
+            cairo_set_source_rgb(cr, 1, 1, 1);
             sprintf(process_no, "P%d", gantt.data[i]);
             cairo_text_extents(cr, process_no, &extents);
             cairo_set_font_size(cr, 15);
